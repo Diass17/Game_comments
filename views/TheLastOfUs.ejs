@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="TheLastOfUs.css">
+  <title>The Last of Us</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Include jQuery -->
+</head>
+<body>
+  <div class="gradient-background">
+    <div class="content-block">
+      <div class="photo-game">
+        <img src="https://cdn.europosters.eu/image/750/posters/the-last-of-us-key-art-i127761.jpg" alt="The Last of Us Poster">
+        <ul>
+          <li class="req">SYSTEM<br>REQUIREMENTS</li>
+          <li>CPU: AMD Ryzen 5 1500X, Intel Core i7-4770K</li>
+          <li>RAM: 16 GB</li>
+          <li>VIDEO CARD: AMD Radeon RX 6500 XT (4 GB), NVIDIA GeForce GTX 970 (4 GB), NVIDIA GeForce 1050 Ti (4 GB)</li>
+          <li>DEDICATED VIDEO RAM: 4096 MB</li>
+          <li>PIXEL SHADER: 5.1</li>
+          <li>VERTEX SHADER: 5.1</li>
+          <li>OS: Windows 10 (Version 1909 or Newer)</li>
+          <li>FREE DISK SPACE: 100 GB</li>
+        </ul>
+      </div>
+
+      <div class="extra-block">
+        <div class="TLOUtext">
+          <h3>The Last Of Us</h3>
+        </div>
+        <div class="description">
+          <h4>
+            The Last of Us is a post-apocalyptic zombie game that tells an intimate story while also having an epic storyline.
+            Players follow Joel and Ellie as they navigate a hostile world and the challenges they face on their journey.
+          </h4>
+        </div>
+      </div>
+
+      <div class="comment-section">
+        <form id="comment-form">
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name" required><br><br>
+
+          <label for="comment">Your comment:</label>
+          <textarea id="comment" name="comment" rows="4" required></textarea>
+
+          <button type="submit"><b>Send</b></button>
+        </form>
+
+        <div style="margin-top: 40px; color: white;" id="comments-list">
+          <% data.forEach(entry => { %>
+            <div style="margin-bottom: 20px; border-bottom: 1px solid gray; padding-bottom: 10px;" id="comment-<%= entry._id %>">
+              <strong><%= entry.name %>:</strong><br>
+              <div id="comment-text-<%= entry._id %>"><%= entry.comment %></div>
+
+              <div id="edit-form-<%= entry._id %>" style="display: none;">
+                <form class="edit-comment-form" data-id="<%= entry._id %>">
+                  <textarea name="comment" rows="4" required><%= entry.comment %></textarea><br><br>
+                  <button type="submit"><b>Update</b></button>
+                  <button type="button" onclick="cancelEdit('<%= entry._id %>')">Cancel</button>
+                </form>
+              </div>
+
+              <button onclick="editComment('<%= entry._id %>')" style="margin-top: 5px; background-color: orange; color: white; border: none; padding: 5px 10px; cursor: pointer;">
+                Edit
+              </button>
+
+              <button onclick="deleteComment('<%= entry._id %>')" style="margin-top: 5px; background-color: crimson; color: white; border: none; padding: 5px 10px; cursor: pointer;">
+                Delete
+              </button>
+            </div>
+          <% }); %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Prevent default form submission and handle it via AJAX
+    $('#comment-form').on('submit', function(e) {
+      e.preventDefault();
+
+      const name = $('#name').val();
+      const comment = $('#comment').val();
+
+      $.ajax({
+        url: '/addComment/TheLastOfUs',
+        method: 'POST',
+        data: { name, comment },
+        success: function(data) {
+          // Append new comment to the comments list
+          $('#comments-list').append(`
+            <div style="margin-bottom: 20px; border-bottom: 1px solid gray; padding-bottom: 10px;" id="comment-${data._id}">
+              <strong>${data.name}:</strong><br>
+              <div id="comment-text-${data._id}">${data.comment}</div>
+              <div id="edit-form-${data._id}" style="display: none;">
+                <form class="edit-comment-form" data-id="${data._id}">
+                  <textarea name="comment" rows="4" required>${data.comment}</textarea><br><br>
+                  <button type="submit"><b>Update</b></button>
+                  <button type="button" onclick="cancelEdit('${data._id}')">Cancel</button>
+                </form>
+              </div>
+              <button onclick="editComment('${data._id}')" style="margin-top: 5px; background-color: orange; color: white; border: none; padding: 5px 10px; cursor: pointer;">
+                Edit
+              </button>
+              <button onclick="deleteComment('${data._id}')" style="margin-top: 5px; background-color: crimson; color: white; border: none; padding: 5px 10px; cursor: pointer;">
+                Delete
+              </button>
+            </div>
+          `);
+          // Clear the form inputs
+          $('#name').val('');
+          $('#comment').val('');
+        },
+        error: function(err) {
+          console.error('Error adding comment:', err);
+        }
+      });
+    });
+
+    // Function to toggle the edit form for a specific comment
+    function editComment(commentId) {
+      document.getElementById('comment-text-' + commentId).style.display = 'none';
+      document.getElementById('edit-form-' + commentId).style.display = 'block';
+    }
+
+    // Function to cancel editing and revert back to viewing the comment
+    function cancelEdit(commentId) {
+      document.getElementById('comment-text-' + commentId).style.display = 'block';
+      document.getElementById('edit-form-' + commentId).style.display = 'none';
+    }
+
+    // Update comment via AJAX
+    $(document).on('submit', '.edit-comment-form', function(e) {
+      e.preventDefault();
+
+      const commentId = $(this).data('id');
+      const newComment = $(this).find('textarea').val();
+
+      $.ajax({
+        url: '/editComment',
+        method: 'POST',
+        data: { id: commentId, comment: newComment },
+        success: function(data) {
+          // Update the comment text dynamically
+          $('#comment-text-' + commentId).text(newComment);
+          cancelEdit(commentId);
+        },
+        error: function(err) {
+          console.error('Error updating comment:', err);
+        }
+      });
+    });
+
+    // Delete comment via AJAX
+    function deleteComment(commentId) {
+      $.ajax({
+        url: `/deleteComment/${commentId}/TheLastOfUs`,
+        method: 'POST',
+        success: function() {
+          // Remove the comment from the DOM
+          $('#comment-' + commentId).remove();
+        },
+        error: function(err) {
+          console.error('Error deleting comment:', err);
+        }
+      });
+    }
+  </script>
+</body>
+</html>

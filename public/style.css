@@ -1,0 +1,83 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.gradient-background {
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(to left, #081f72, #690ca6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.content-block {
+    background-color: #252525;
+    padding: 50px;
+    text-align: center;
+    position: relative;
+    height: 85vh;
+    width: 80vh;
+    border-radius: 25px;
+}
+
+h1{
+    padding-bottom: 20px;
+}
+
+img{
+    width: 20vh;
+    height: 25vh;
+    padding: 15px; 
+}
+
+.games-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    flex-direction:row;
+}
+
+.game1, .game2, .game3, .game4, .game5, .game6 {
+    flex: 0 0 20%;
+    box-sizing: border-box;
+}
+
+.game1 img, .game2 img, .game3 img, .game4 img, .game5 img, .game6 img {
+    height: 26vh;
+    width: 20vh;
+    display: block; 
+    margin-bottom: 5px;
+}
+
+.text1,.text2,.text3,.text4,.text5,.text6{
+    text-align: center;
+    color: white;
+}
+
+.title {
+    color: white;
+    font-size: 4em;
+    margin: 0;
+}
+
+.divider {
+    width: 100%;
+    height: 1px;
+    background-color: white;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+.text1 a, .text2 a, .text3 a, .text4 a, .text5 a, .text6 a {
+    color: #ffffff;
+    text-decoration: none; 
+    margin-top: 5px;
+    display: block; 
+}
+
+.text1 h4, .text2 h4, .text3 h4, .text4 h4, .text5 h4, .text6 h4 {
+    margin: 0; 
+}
