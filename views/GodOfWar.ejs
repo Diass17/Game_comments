@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="GodOfWar.css">
   <title>God of War</title>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Include jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
   <div class="gradient-background">
@@ -77,7 +77,6 @@
   </div>
 
   <script>
-    // Prevent default form submission and handle it via AJAX
     $('#comment-form').on('submit', function(e) {
       e.preventDefault();
 
@@ -89,7 +88,6 @@
         method: 'POST',
         data: { name, comment },
         success: function(data) {
-          // Append new comment to the comments list
           $('#comments-list').append(`
             <div style="margin-bottom: 20px; border-bottom: 1px solid gray; padding-bottom: 10px;" id="comment-${data._id}">
               <strong>${data.name}:</strong><br>
@@ -109,7 +107,6 @@
               </button>
             </div>
           `);
-          // Clear the form inputs
           $('#name').val('');
           $('#comment').val('');
         },
@@ -119,19 +116,16 @@
       });
     });
 
-    // Function to toggle the edit form for a specific comment
     function editComment(commentId) {
       document.getElementById('comment-text-' + commentId).style.display = 'none';
       document.getElementById('edit-form-' + commentId).style.display = 'block';
     }
 
-    // Function to cancel editing and revert back to viewing the comment
     function cancelEdit(commentId) {
       document.getElementById('comment-text-' + commentId).style.display = 'block';
       document.getElementById('edit-form-' + commentId).style.display = 'none';
     }
 
-    // Update comment via AJAX
     $(document).on('submit', '.edit-comment-form', function(e) {
       e.preventDefault();
 
@@ -143,7 +137,6 @@
         method: 'POST',
         data: { id: commentId, comment: newComment },
         success: function(data) {
-          // Update the comment text dynamically
           $('#comment-text-' + commentId).text(newComment);
           cancelEdit(commentId);
         },
@@ -153,13 +146,11 @@
       });
     });
 
-    // Delete comment via AJAX
     function deleteComment(commentId) {
       $.ajax({
         url: `/deleteComment/${commentId}/GodOfWar`,
         method: 'POST',
         success: function() {
-          // Remove the comment from the DOM
           $('#comment-' + commentId).remove();
         },
         error: function(err) {
